@@ -292,3 +292,97 @@ Sharing data between containers
 
 
 ## 3. Building Docker images
+
+### 3.1 What are Dockerfiles
+	'docker build -t <name-of-result> .
+			Note the '.' here means the location of the dockerfile would be saved in current directory.
+			You can assign specific path to replace the '.'
+
+### 3.2 Building Docker Dockerfiles
+	In this lesson, you'll learn how to build a docker filer abd chain them up like inheritance
+		e.g. debian:sid >> example/nanoer
+
+	Besides, You can use the command to define the default action when the container is initialized
+
+	FROM busybox
+	RUN echo "Building simple docker image."
+	CMD echo "Hello Container"
+
+
+
+	FROM debian:sid
+	RUN apt-get -y update
+	RUN apt-get install nano
+	CMD ["/bin/nano", "/tmp/notes"]
+
+
+
+	FROM example/nanoer
+	ADD  notes.txt /notes.txt
+	CMD "nano" "/notes.txt"
+
+
+### 3.3 Dockerfile Syntax
+- FROM statement
+		the docker file should always starts with **From**
+			e.g.
+				'FROM java:8
+
+- MAINTAINER statement
+		Define the author of this dockerfile
+			e.g.
+				'MAINTAINER Firstname Lastname <email@example.com>
+
+- RUN statement
+		Runs the command line, waits for it to finish and saves the result
+			e.g.
+				'RUN unzip install.zip /opt/install/
+				or
+				'RUN echo hell docker
+
+- ADD Statement
+		1. Add local files
+				e.g.
+					'ADD run.sh /run.sh
+		2. Add the content of tar archives
+				e.g.
+					'ADD project.tar.gz /install/
+		3. Works with URLs as well
+				e.g.
+					'ADD htttps://project.example.com/download/1.0/project.rpm /project/
+
+- ENV Statement
+		Sets environment variables both during the build and when running the result
+			e.g.
+				'ENV DB_HOST=db.production.example.com
+				'ENV DB_PORT=5432
+
+- ENTRYPOINT and CMD Statement
+		ENTRYPOINT RUN and CMD can use either **Shell Form** or **Exec Form**
+			1. Shell Form
+						'nano notes.txt
+			2. Exec Form
+						'["bin/nano", "notes.txt"]
+						this cause the nano to be run directly but not surrounded with bash to make it more efficiently
+
+- EXPOSE Statement
+		map a port into container, similar to '-p 1234:1234
+		 	'EXPOSE 8080
+
+- VOLUME Statement
+		Defines shared or ephmeral Volumes
+			'VOLUME ["host/path/", "/container/path/"]
+			'VOLUME ["/shared-data"]
+
+		*Avoid defining shared folders in Dockerfiles, due to you might share it someday*
+
+
+- WORKDIR Statement
+		similar to **CD** which will set the directory the container starts in
+		'WORKDIR /install/
+
+
+- USER Statement
+		Set whihch user the container will run as
+		'USER clayhsiao
+		'USER 1000
