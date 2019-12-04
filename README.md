@@ -4,7 +4,7 @@
 "docker run -ti ubuntu:latest bash"
 	-ti:	for terminal interactive
 
-==============================
+
 docker commit <container-id>[:<version-name>]
 
 doker tag <image-id> <new_image_name>
@@ -15,7 +15,7 @@ docker commit <container_name> <new_image_name>
 
 
 
-==============================
+
 
 docker run --rm -ti ubuntu sleep 5
 
@@ -36,7 +36,6 @@ docker attah <container_name>
 
 
 
-==============================
 
 docker exec -ti <container_name> bash
 
@@ -44,7 +43,7 @@ docker exec -ti <container_name> bash
 	exit container and kill it
 
 
-==============================
+
 There is a 'known' typo in following command which is used to make error while executing
 docker run --name example -d ubuntu bash -c "lose /etc/password"
 
@@ -57,7 +56,7 @@ docker kill <container_name>
 docker rm <container_name>
 	clear
 
-==============================
+
 run docker with Resource Constraints
 
 	Memory Limits:
@@ -80,7 +79,7 @@ Lessons from the Field
 
 
 
-============================= 2.5 Exposing ports =============================
+### 2.5 Exposing ports
 
 docker run --rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash
 
@@ -158,7 +157,7 @@ use 'Netcat' for network debugging
 
 
 
-============================= 2.6 Container Networking =============================
+### 2.6 Container Networking
 
 docker network ls
 docker network create <network-name>
@@ -193,7 +192,7 @@ docker network connect catsonly catserver
 
 
 
-============================= 2.7 Legacy Linking =============================
+### 2.7 Legacy Linking
 
 Legacy Linking:
 	when you use the 'Link' for docker
@@ -216,7 +215,7 @@ Terminal B:
 
 
 
-============================= 2.8 Images =============================
+### 2.8 Images
 
 docker pull
 
@@ -226,7 +225,7 @@ docker rmi <image-name>:<tag>
 docker rmi <image-id>
 
 
-============================= 2.9 Volumes =============================
+### 2.9 Volumes
 
 Docker provides Volumes, which is similar to shared folder between containers.
 
@@ -257,13 +256,13 @@ Sharing data between containers
     'docker run -ti --volumes-from <container-name> ubuntu bash
 
 
-============================= 2.10 Docker registries =============================
+### 2.10 Docker registries
 
 'docker search <keyword>
 'docker login
 
 
-============================= Quiz =============================
+### Quiz
 
 
 1. In Docker, programs run in containers which are comprised of images .
@@ -290,3 +289,6 @@ Sharing data between containers
 
 10. What commands are used to upload a public image?
       docker login and docker push
+
+
+## 3. Building Docker images
