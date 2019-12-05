@@ -101,7 +101,7 @@ use 'Netcat' for network debugging
 
     You can also export ports Dynamically
 
-    terminal A: We don't assigned thr ourtput port and leave it to docker qutomatically
+    terminal A: We don't assigned thr output port and leave it to docker automatically
     	docker run --rm -ti -p 45678 -p 45679 --name echo-server ubuntu:14.04 bash
     	nc -lp 45678 | nc -lp 45679
 
@@ -386,3 +386,168 @@ ENTRYPOINT echo google is this big; cat google-size
   A: both in the rest of the Docker file, and in the finished image
 
 - The Docker file **WORKDIR** command changes directories both for the rest of the Docker file, and in the finished image .
+
+---
+
+## 4. Under the Hood
+
+### 4.1 Docker the program
+
+What Dockers do
+
+- uses **cgroups** to contain process
+- uses **namespaces** to contain networks
+- uses **copy-on-write** filesystems to build images
+
+What Docker Really Does?
+
+- Makes scripting distributed systems **easy**
+
+**Client** and a **server** composed of Docker
+
+{
+create a client inside the docker container, but **NOT** docker in docker
+
+docker run -ti --rm -v /var/run/docker.sock:/var/run/docker.sock docker sh
+
+docker info
+make sure we 're in a docker
+
+docker run -ti --rm ubuntu bash
+}
+
+### 4.2 Networking and namespaces
+
+- Ethernet layer: move **frames** on a wire (or Wi-Fi)
+
+- IP layer: moves packets on a local network
+
+- Routing layer: forwards packets between networks
+
+- Ports: address particular programs on a computer
+
+Docker use bridges to create virtual networks inside the computer
+
+```
+docker run -ti --rm --net=host ubuntu:14.04 bash
+
+apt-get update && apt-get install bridge-utils
+(After above is done)
+
+brctl show
+```
+
+`sudo iptables -n -L -t nat
+
+### 4.4 Storage
+
+copy-on-write
+
+`mount -o bind other-work work`umount work
+
+### Quiz
+
+1. Docker uses bridges and NAT to create virtual Ethernet networks.
+
+2. Which Linux kernel feature is essential for container process isolation?
+   A: cgroups
+
+3. Docker images are read only .
+
+---
+
+## 4. Orchestration: Building Systems with Docker
+
+### 4.1 Registries in detail
+
+Docker Registry:
+
+- a program
+- Stores layers and images
+- Listen on (usually) port 5000
+- maintain in index and searches tags
+- Authorizes and authenticates connections (sometimes)
+
+Python Docker Registry
+Nexus
+
+```
+docker run -d -p 5000:5000 -restart=always --name my-registry registry:2
+
+docker tag ubuntu:14.04 localhost:5000/mycompany/my-ubuntu:99
+
+docker push localhost:5000/my-company/my-ubuntu:99
+
+then do registry follow the document on docker registry website
+```
+
+save locally
+`docker save -o my-image.tar.gz debian:sid busybox ubuntu:14.04
+
+load docker image from loval
+`docker load -i my-images.tar.gz
+
+### 4.2 Intro to orchestration
+
+Docker Compose
+
+- Single machine coordination
+- Design for testing and development
+
+**_Kuberbetes (K8S)_**
+
+- Containers run programs
+- Pods group containers together
+- Services make pod available to others
+- Lables are used for very advanced service discovery
+
+Advantages of K8S:
+
+- Makes scripting large operation possible with the **kubect1** command
+- Very flexible overlay networking
+- Runs equally well on your hardware or a cloud provider
+- Build-in discovery
+- Get started at http://kubernetes.in
+
+**_EC2_**
+**Task definitions**
+Define a set of containers that always run together
+
+**Tasks**
+Actually makes a container run right now
+
+**Services and ecposes it to the Net**
+Ensure that atask is running all the time.
+
+Advantages of EC2:
+
+- Connects load balances (ELBs) to services
+- Can create your onw host instances in AWS
+- Make your instance tart the agent and join the cluster
+- Pass the docker control socket into the agent
+- Provided docker repos-and it's easy to run your own repo
+- Note that containers (tasks) can be part of CloudFormation stacks!
+- Get started at https://aws.amazon.com/ecs/
+
+AWS Fargate is a more modern version of ECS
+
+### 4.3 K8S in AWS
+
+Amazon EKS
+`kubectl get services
+
+### Quiz
+
+- This command is used to set which registry an image will be uploaded to.
+  A: docker tag
+- Which orchestration system is only suited to single-computer orchestration?
+  A: docker compose
+
+---
+
+## Where To Go Next
+
+- **Goal: get on service to run in docker**
+- Learn more about Dockerfiles
+- Run a production service on you laptop
+- Make a personal development image
